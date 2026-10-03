@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dimithre & Hasini — Homecoming</title>
+<title>Dimithre & Navodya — Homecoming</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -104,13 +104,31 @@ nav a:hover { color: var(--wine); }
 }
 
 .hero-eyebrow {
-  font-size: 0.68rem; font-weight: 400;
-  letter-spacing: 0.22em; text-transform: uppercase;
+  font-size: 0.78rem; /* Font size එක 0.72rem සිට 0.85rem දක්වා වැඩි කළා */
+  font-weight: 400;
+  letter-spacing: 0.22em; 
+  text-transform: uppercase;
   color: var(--gold-dk);
   margin-bottom: 1.8rem;
-  max-width: 480px;
-  line-height: 1.8;
-  opacity: 0; animation: fadeUp 1s 0.5s ease forwards;
+  max-width: 520px;
+  line-height: 2.1;
+  opacity: 0; 
+  animation: fadeUp 1s 0.5s ease forwards;
+}
+
+/* Guest name එක පැහැදිලිව පෙනෙන විදියට Font size එක වැඩි කළා */
+.hero-eyebrow .guest-name {
+  display: inline-block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.50rem; /* නමේ Font size එක 1.45rem සිට 1.85rem දක්වා වැඩි කළා */
+  font-style: italic;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.04em;
+  color: var(--wine);
+  margin: 0.4rem 0;
+  border-bottom: 1px solid var(--gold);
+  padding-bottom: 2px;
 }
 
 .hero-names {
@@ -557,7 +575,7 @@ footer p {
   <a href="#story">Our Story</a>
   <a href="#details">The Day</a>
   <a href="#location">Venue</a>
-  <a href="#rsvp">RSVP</a>
+  <a href="#rsvp">CONFIRM ATTENDANCE</a>
 </nav>
 
 <!-- HERO -->
@@ -577,7 +595,7 @@ footer p {
   <h1 class="hero-names">
     Dimithre
     <span class="amp">&amp;</span>
-    Hasini
+    Navodya
   </h1>
 
   <div class="hero-rule">
@@ -592,7 +610,7 @@ footer p {
   <p class="hero-venue">Jetwing Blue · Negombo, Sri Lanka</p>
 
   <div class="hero-cta">
-    <a href="#rsvp" class="btn-primary">Kindly RSVP</a>
+    <a href="#rsvp" class="btn-primary">Confirm Your Attendance</a>
   </div>
 </section>
 
@@ -705,7 +723,8 @@ footer p {
 <section class="rsvp-section" id="rsvp">
   <div class="section-header reveal">
     <span class="eyebrow">Kindly Reply By October 15</span>
-    <h2 class="section-title">Will you join us?</h2>
+    <h2 class="section-title">Are You Attending?</h2>
+    <p class="section-subtitle">Please let us know if you will be joining us to celebrate</p>
   </div>
 
   <div class="rsvp-form reveal">
@@ -765,7 +784,7 @@ footer p {
       </div>
     </div>
 
-    <button class="btn-submit" id="submit-btn" onclick="submitRSVP()">Send RSVP</button>
+    <button class="btn-submit" id="submit-btn" onclick="submitRSVP()">CONFIRM ATTENDANCE</button>
   </div>
 </section>
 
@@ -1076,27 +1095,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const rawName = urlParams.get('name');
 
-    // Hero section-ile eyebrow element edukkunnu
     const heroEyebrow = document.querySelector('.hero-eyebrow');
 
     if (rawName && rawName.trim() !== '') {
-        // Underscore (_) maatri space aakkunnu
         const formattedName = rawName.replace(/_/g, ' ').trim();
 
-        // 1. RSVP Form-ile input field-il name fill cheyyunnu
+        // RSVP Form එක auto-fill කිරීම
         const fnameInput = document.getElementById('fname');
         if (fnameInput) {
             fnameInput.value = formattedName;
         }
 
-        // 2. Hero Section-il name display cheyyunnu
+        // Hero Section එකට නම ලස්සනට එකතු කිරීම
         if (heroEyebrow) {
-            heroEyebrow.innerHTML = `together <br>with their families <br> warmly request the presence of<br> <strong style="color: #7D3C4A; font-size: 1.1em;">${formattedName}</strong><br> to celebrate their homecoming`;
+            heroEyebrow.innerHTML = `together<br>with their families<br>warmly request the presence of<br><span class="guest-name">${formattedName}</span><br>to celebrate their homecoming`;
         }
     } else {
-        // Link-il name illengil 'you' ennu vaikaam allenkil default text dikkaam
+        // ලින්ක් එකේ නමක් නැතිව ආවොත්
         if (heroEyebrow) {
-            heroEyebrow.innerHTML = `together <br>with their families <br> warmly request the presence of<br> <strong>You</strong><br> to celebrate their homecoming`;
+            heroEyebrow.innerHTML = `together<br>with their families<br>warmly request the presence of<br><span class="guest-name">You & Your Family</span><br>to celebrate their homecoming`;
         }
     }
 });
