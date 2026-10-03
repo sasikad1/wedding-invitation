@@ -302,7 +302,18 @@ function openEnvelope() {
 
   // Redirect to wedding.html after opening animation completes
   setTimeout(() => {
-    window.location.href = "wedding.html";
+    // දැනට තියෙන URL එකෙන් 'name' parameter එක ලබා ගැනීම
+    const urlParams = new URLSearchParams(window.location.search);
+    const guestName = urlParams.get('name');
+
+    // wedding.html එකට යන ලින්ක් එක සකස් කිරීම
+    let destinationUrl = 'wedding.html';
+    if (guestName) {
+        destinationUrl += '?name=' + encodeURIComponent(guestName);
+    }
+
+    // wedding.html පිටුවට Redirect කිරීම
+    window.location.href = destinationUrl;
   }, 1200);
 }
 

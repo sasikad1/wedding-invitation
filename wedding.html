@@ -1071,6 +1071,35 @@ window.addEventListener('DOMContentLoaded', () => {
     sessionStorage.removeItem('playMusicOnLoad');
   }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const rawName = urlParams.get('name');
+
+    // Hero section-ile eyebrow element edukkunnu
+    const heroEyebrow = document.querySelector('.hero-eyebrow');
+
+    if (rawName && rawName.trim() !== '') {
+        // Underscore (_) maatri space aakkunnu
+        const formattedName = rawName.replace(/_/g, ' ').trim();
+
+        // 1. RSVP Form-ile input field-il name fill cheyyunnu
+        const fnameInput = document.getElementById('fname');
+        if (fnameInput) {
+            fnameInput.value = formattedName;
+        }
+
+        // 2. Hero Section-il name display cheyyunnu
+        if (heroEyebrow) {
+            heroEyebrow.innerHTML = `together <br>with their families <br> warmly request the presence of<br> <strong style="color: #7D3C4A; font-size: 1.1em;">${formattedName}</strong><br> to celebrate their homecoming`;
+        }
+    } else {
+        // Link-il name illengil 'you' ennu vaikaam allenkil default text dikkaam
+        if (heroEyebrow) {
+            heroEyebrow.innerHTML = `together <br>with their families <br> warmly request the presence of<br> <strong>You</strong><br> to celebrate their homecoming`;
+        }
+    }
+});
 </script>
 </body>
 </html>
