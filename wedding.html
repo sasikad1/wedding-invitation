@@ -1084,7 +1084,7 @@ async function submitRSVP(event) {
       phone: phone
     });
 
-    alert("RSVP එක සාර්ථකව යැවුණා!");
+    alert("RSVP Success");
   } catch (error) {
     console.error("Error adding document: ", error);
     alert("ERROR: " + error.message);
@@ -1176,7 +1176,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const guestsInput = document.getElementById('guests');
 
     if (!name.trim()) {
-      alert("කරුණාකර ඔබේ නම ඇතුළත් කරන්න.");
+      alert("Plese enter your name.");
       return;
     }
 
@@ -1193,7 +1193,7 @@ document.addEventListener('DOMContentLoaded', function() {
         phone: phone
       });
 
-      alert("RSVP එක සාර්ථකව යැවුණා!");
+      alert("RSVP Success");
     } catch (error) {
       console.error("Error adding document: ", error);
       alert("ERROR: " + error.message);
