@@ -728,28 +728,29 @@ footer p {
   </div>
 
   <div class="rsvp-form reveal">
+    <!-- Attendance selection is placed at the top -->
+    <div class="field">
+      <label>Will you attend?</label>
+      <div class="attend-toggle">
+        <button type="button" id="btn-yes" class="active" onclick="setAttend(true)">✦ Joyfully Accept</button>
+        <button type="button" id="btn-no" onclick="setAttend(false)">Regretfully Decline</button>
+      </div>
+    </div>
+
     <div class="form-row">
       <div class="field">
         <label>Name</label>
-        <input type="text" id="fname" placeholder="Amali">
+        <input type="text" id="name" placeholder="Amali">
       </div>
-      <!-- <div class="field">
-        <label>Last Name</label>
-        <input type="text" id="lname" placeholder="Perera">
-      </div> -->
     </div>
-
-    <!-- <div class="field">
-      <label>Email Address</label>
-      <input type="email" id="email" placeholder="amali@email.com">
-    </div> -->
 
     <div class="field">
       <label>Phone (Optional)</label>
       <input type="tel" id="phone" placeholder="+94 77 000 0000">
     </div>
 
-    <div class="field">
+    <!-- Wrap guest count field with an ID for dynamic visibility -->
+    <div class="field" id="guest-field">
       <label>Number of Guests</label>
       <select id="guests">
         <option value="1">Just me</option>
@@ -759,34 +760,15 @@ footer p {
       </select>
     </div>
 
-    <!-- <div class="field">
-      <label>Dietary Requirements</label>
-      <select id="dietary">
-        <option value="none">No restrictions</option>
-        <option value="vegetarian">Vegetarian</option>
-        <option value="vegan">Vegan</option>
-        <option value="halal">Halal</option>
-        <option value="gluten-free">Gluten Free</option>
-        <option value="other">Other (please specify below)</option>
-      </select>
-    </div> -->
-
     <div class="field">
       <label>Message for the Couple (Optional)</label>
       <textarea id="message" placeholder="Share your wishes…"></textarea>
     </div>
 
-    <div class="field">
-      <label>Will you attend?</label>
-      <div class="attend-toggle">
-        <button id="btn-yes" class="active" onclick="setAttend(true)">✦ Joyfully Accept</button>
-        <button id="btn-no" onclick="setAttend(false)">Regretfully Decline</button>
-      </div>
-    </div>
-
     <button class="btn-submit" id="submit-btn" onclick="submitRSVP()">CONFIRM ATTENDANCE</button>
   </div>
 </section>
+
 
 <!-- FOOTER -->
 <footer>
@@ -966,40 +948,28 @@ async function firestoreGet() {
 let localData = JSON.parse(localStorage.getItem('wedding_rsvps') || '[]');
 
 async function submitRSVP() {
-  const fname = document.getElementById('fname').value.trim();
-  const lname = document.getElementById('lname').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const guests = parseInt(document.getElementById('guests').value);
-  const dietary = document.getElementById('dietary').value;
-  const message = document.getElementById('message').value.trim();
+  const name = document.getElementById('name').value;
+  const phone = document.getElementById('phone').value;
+  const message = document.getElementById('message').value;
+  
+  // Attending false නම් guests count එක 0 කරන්න
+  const guestCount = isAttending 
+    ? parseInt(document.getElementById('guests').value) 
+    : 0;
 
-  if (!fname || !lname || !email) { showToast('Please fill in your name and email'); return; }
+  try {
+    await db.collection("wedding-guest").add({
+      attending: isAttending, // boolean (true / false)
+      guests: guestCount,     // number
+      message: message,       // string
+      name: name,             // string
+      phone: phone            // string
+    });
 
-  const btn = document.getElementById('submit-btn');
-  btn.disabled = true; btn.textContent = 'Sending…';
-
-  const entry = { first_name: fname, last_name: lname, email, phone, guests, dietary, message, attending, submitted_at: new Date().toISOString() };
-
-  let saved = false;
-  if (FIREBASE_PROJECT_ID !== 'YOUR_PROJECT_ID') {
-    try { await firestoreAdd(entry); saved = true; } catch (e) { console.warn('Firebase failed, using local', e); }
+    alert("RSVP submitted successfully!");
+  } catch (error) {
+    console.error("Error adding document: ", error);
   }
-  if (!saved) {
-    localData.push(entry);
-    localStorage.setItem('wedding_rsvps', JSON.stringify(localData));
-  }
-
-  showToast(attending ? '🌸 We cannot wait to celebrate with you!' : 'You will be missed. Thank you for letting us know.');
-  document.getElementById('fname').value = '';
-  document.getElementById('lname').value = '';
-  document.getElementById('email').value = '';
-  document.getElementById('phone').value = '';
-  document.getElementById('message').value = '';
-  document.getElementById('dietary').value = 'none';
-  setAttend(true);
-  btn.disabled = false; btn.textContent = 'Send RSVP';
-  loadCounts();
 }
 
 async function loadCounts() {
@@ -1078,6 +1048,25 @@ document.querySelectorAll('.detail-card').forEach(card => {
   });
 });
 
+let isAttending = true;
+
+function setAttend(willAttend) {
+  isAttending = willAttend;
+  const guestField = document.getElementById('guest-field');
+  const btnYes = document.getElementById('btn-yes');
+  const btnNo = document.getElementById('btn-no');
+
+  if (willAttend) {
+    btnYes.classList.add('active');
+    btnNo.classList.remove('active');
+    guestField.style.display = 'block'; // Show guest count field
+  } else {
+    btnNo.classList.add('active');
+    btnYes.classList.remove('active');
+    guestField.style.display = 'none'; // Hide guest count field
+  }
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   const audio = document.getElementById('bg-music');
   
@@ -1101,7 +1090,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const formattedName = rawName.replace(/_/g, ' ').trim();
 
         // RSVP Form එක auto-fill කිරීම
-        const fnameInput = document.getElementById('fname');
+        const fnameInput = document.getElementById('name');
         if (fnameInput) {
             fnameInput.value = formattedName;
         }
@@ -1117,6 +1106,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+</script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCfLSu2d-KnOdlTPiPcuuuDsj898h_htpk",
+    authDomain: "wedding-invitaion-eb0a3.firebaseapp.com",
+    projectId: "wedding-invitaion-eb0a3",
+    storageBucket: "wedding-invitaion-eb0a3.firebasestorage.app",
+    messagingSenderId: "527830152944",
+    appId: "1:527830152944:web:50bfbd40895b86b673f435"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
 </script>
 </body>
 </html>
