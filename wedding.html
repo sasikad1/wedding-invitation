@@ -1048,22 +1048,46 @@ document.querySelectorAll('.detail-card').forEach(card => {
   });
 });
 
+// Function එකෙන් පිටත global variable එක define කරන්න
 let isAttending = true;
 
-function setAttend(willAttend) {
-  isAttending = willAttend;
-  const guestField = document.getElementById('guest-field');
-  const btnYes = document.getElementById('btn-yes');
-  const btnNo = document.getElementById('btn-no');
+function setAttend(status) {
+  isAttending = status;
+  // අනිත් toggle logic ටික මෙතැනට...
+}
 
-  if (willAttend) {
-    btnYes.classList.add('active');
-    btnNo.classList.remove('active');
-    guestField.style.display = 'block'; // Show guest count field
-  } else {
-    btnNo.classList.add('active');
-    btnYes.classList.remove('active');
-    guestField.style.display = 'none'; // Hide guest count field
+async function submitRSVP(event) {
+  // Page එක refresh වෙන එක නවත්තන්න (form එකක් ඇතුළේ තියෙනවා නම්)
+  if (event) event.preventDefault();
+
+  const name = document.getElementById('name').value;
+  const phone = document.getElementById('phone').value;
+  const message = document.getElementById('message').value;
+  const guestsInput = document.getElementById('guests');
+
+  // Name එක හිස්නම් Alert එකක් දෙන්න
+  if (!name.trim()) {
+    alert("කරුණාකර ඔබේ නම ඇතුළත් කරන්න.");
+    return;
+  }
+
+  const guestCount = isAttending && guestsInput 
+    ? parseInt(guestsInput.value) 
+    : 0;
+
+  try {
+    await db.collection("wedding-guest").add({
+      attending: isAttending,
+      guests: guestCount,
+      message: message,
+      name: name,
+      phone: phone
+    });
+
+    alert("RSVP එක සාර්ථකව යැවුණා!");
+  } catch (error) {
+    console.error("Error adding document: ", error);
+    alert("ERROR: " + error.message);
   }
 }
 
