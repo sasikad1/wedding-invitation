@@ -1386,7 +1386,7 @@
   </script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCfLSu2d-KnOdlTPiPcuuuDsj898h_htpk",
@@ -1397,56 +1397,64 @@
       appId: "1:527830152944:web:50bfbd40895b86b673f435"
     };
 
-    // Firebase සහ Firestore initialize කිරීම
+    // Firebase mathu Firestore initialize maaduvudhu
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
     let isAttending = true;
 
-    // setAttend function එක HTML onclick වලට ලබාදීම
+    // setAttend function nalli side option hiditakella toggle maaduvudhu
     window.setAttend = function (willAttend) {
       isAttending = willAttend;
       const guestField = document.getElementById('guest-field');
+      const sideField = document.getElementById('side-field');
       const btnYes = document.getElementById('btn-yes');
       const btnNo = document.getElementById('btn-no');
 
       if (willAttend) {
         btnYes.classList.add('active');
         btnNo.classList.remove('active');
-        guestField.style.display = 'block';
+        if (guestField) guestField.style.display = 'block';
+        if (sideField) sideField.style.display = 'block';
       } else {
         btnNo.classList.add('active');
         btnYes.classList.remove('active');
-        guestField.style.display = 'none';
+        if (guestField) guestField.style.display = 'none';
+        if (sideField) sideField.style.display = 'none';
       }
     };
 
-    // submitRSVP function එක HTML onclick වලට ලබාදීම
+    // submitRSVP function nalli side value padedu Firestore ge kaluhisuvudhu
     window.submitRSVP = async function () {
       const name = document.getElementById('name').value;
       const phone = document.getElementById('phone').value;
       const message = document.getElementById('message').value;
       const guestsInput = document.getElementById('guests');
+      const sideSelect = document.getElementById('side');
 
       if (!name.trim()) {
-        alert("Plese enter your name.");
+        alert("Please enter your name.");
         return;
       }
 
       const guestCount = isAttending && guestsInput
-        ? parseInt(guestsInput.value)
+        ? (parseInt(guestsInput.value) || 1)
         : 0;
+
+      const guestSide = sideSelect ? sideSelect.value : 'groom';
 
       try {
         await addDoc(collection(db, "wedding-guest"), {
           attending: isAttending,
           guests: guestCount,
+          side: guestSide, // Groom's or Bride's side
           message: message,
           name: name,
-          phone: phone
+          phone: phone,
+          createdAt: serverTimestamp()
         });
 
-        alert("RSVP Success");
+        alert("RSVP Success!");
       } catch (error) {
         console.error("Error adding document: ", error);
         alert("ERROR: " + error.message);
