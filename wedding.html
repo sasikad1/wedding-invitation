@@ -927,29 +927,29 @@
 
   <!-- MAP -->
   <section class="map-section" id="location">
-  <div class=" map-inner">
-    <div class="section-header reveal">
-      <span class="eyebrow">Find Us</span>
-      <h2 class="section-title">The Venue</h2>
-    </div>
-    <div class="map-wrapper reveal">
-      <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3958.123!2d79.8392307!3d7.2416099!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2e94e0e8dfdd1%3A0xb7e9e0067ddd429f!2sJetwing%20Blue!5e0!3m2!1sen!2slk!4v1690000000000!5m2!1sen!2slk"
-        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-      </iframe>
-      <div class="map-info">
-        <div class="map-info-text">
-          <h4>Jetwing Blue</h4>
-          <p>Porutota Road, Ethukale, Negombo 11500, Sri Lanka</p>
-        </div>
-        <a href="https://maps.app.goo.gl/c8Pk3rcSvc5a8n7s6" target="_blank" class="map-link">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M7 1L13 7L7 13M13 7H1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
-          </svg>
-          Open in Maps
-        </a>
+    <div class=" map-inner">
+      <div class="section-header reveal">
+        <span class="eyebrow">Find Us</span>
+        <h2 class="section-title">The Venue</h2>
       </div>
-    </div>
+      <div class="map-wrapper reveal">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3958.123!2d79.8392307!3d7.2416099!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2e94e0e8dfdd1%3A0xb7e9e0067ddd429f!2sJetwing%20Blue!5e0!3m2!1sen!2slk!4v1690000000000!5m2!1sen!2slk"
+          allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+        <div class="map-info">
+          <div class="map-info-text">
+            <h4>Jetwing Blue</h4>
+            <p>Porutota Road, Ethukale, Negombo 11500, Sri Lanka</p>
+          </div>
+          <a href="https://maps.app.goo.gl/c8Pk3rcSvc5a8n7s6" target="_blank" class="map-link">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M7 1L13 7L7 13M13 7H1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
+            </svg>
+            Open in Maps
+          </a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -966,59 +966,59 @@
 
   <!-- RSVP -->
   <section class="rsvp-section" id="rsvp">
-<div class="section-header reveal">
-  <span class="eyebrow">Kindly Reply By October 15</span>
-  <h2 class="section-title">Are You Attending?</h2>
-</div>
+    <div class="section-header reveal">
+      <span class="eyebrow">Kindly Reply By October 15</span>
+      <h2 class="section-title">Are You Attending?</h2>
+    </div>
 
-      <div class="rsvp-form reveal">
-        <!-- Attendance selection is placed at the top -->
-        <div class="field">
-  <label>Your Response</label> <!-- "Will you attend?" වෙනුවට "Your Response" ලෙස යොදන්න -->
-  <div class="attend-toggle">
-    <button type="button" id="btn-yes" class="active" onclick="setAttend(true)">✦ Joyfully Accept</button>
-    <button type="button" id="btn-no" onclick="setAttend(false)">Regretfully Decline</button>
-  </div>
-</div>
-
-        <div class="field">
-          <label>Whose Guest Are You?</label>
-          <select id="side" required>
-            <option value="groom">Groom's Side</option>
-            <option value="bride">Bride's Side</option>
-          </select>
+    <div class="rsvp-form reveal">
+      <!-- Attendance selection is placed at the top -->
+      <div class="field">
+        <!-- <label>Your Response</label> -->
+        <div class="attend-toggle">
+          <button type="button" id="btn-yes" class="active" onclick="setAttend(true)">✦ Joyfully Accept</button>
+          <button type="button" id="btn-no" onclick="setAttend(false)">Regretfully Decline</button>
         </div>
-
-        <div class="form-row">
-          <div class="field">
-            <label>Name</label>
-            <input type="text" id="name" placeholder="Amali">
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Phone (Optional)</label>
-          <input type="tel" id="phone" placeholder="+94 77 000 0000">
-        </div>
-
-        <!-- Wrap guest count field with an ID for dynamic visibility -->
-        <div class="field" id="guest-field">
-          <label>Number of Guests</label>
-          <select id="guests">
-            <option value="1">Just me</option>
-            <option value="2">2 guests</option>
-            <option value="3">3 guests</option>
-            <option value="4">4 guests</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label>Message for the Couple (Optional)</label>
-          <textarea id="message" placeholder="Share your wishes…"></textarea>
-        </div>
-
-        <button class="btn-submit" id="submit-btn" onclick="submitRSVP()">CONFIRM ATTENDANCE</button>
       </div>
+
+      <div class="field">
+        <label>Whose Guest Are You?</label>
+        <select id="side" required>
+          <option value="groom">Groom's Side</option>
+          <option value="bride">Bride's Side</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label>Name</label>
+          <input type="text" id="name" placeholder="Amali">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Phone (Optional)</label>
+        <input type="tel" id="phone" placeholder="+94 77 000 0000">
+      </div>
+
+      <!-- Wrap guest count field with an ID for dynamic visibility -->
+      <div class="field" id="guest-field">
+        <label>Number of Guests</label>
+        <select id="guests">
+          <option value="1">Just me</option>
+          <option value="2">2 guests</option>
+          <option value="3">3 guests</option>
+          <option value="4">4 guests</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Message for the Couple (Optional)</label>
+        <textarea id="message" placeholder="Share your wishes…"></textarea>
+      </div>
+
+      <button class="btn-submit" id="submit-btn" onclick="submitRSVP()">CONFIRM ATTENDANCE</button>
+    </div>
   </section>
 
 
