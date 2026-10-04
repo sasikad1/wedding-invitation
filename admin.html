@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Dimithre & Navodya — RSVP Dashboard</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --wine: #7D3C4A;
+      --wine-lt: #A05060;
+      --gold: #C4A882;
+      --gold-dk: #9E7E52;
+      --ivory: #FDF8F4;
+      --cream: #F5EDE6;
+      --ink: #2A1F1F;
+      --muted: #7A6060;
+      --blush: #E8C4C4;
+      --sage: #8A9E8C
+    }
+
+    body {
+      background: var(--ivory);
+      color: var(--ink);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      min-height: 100vh
+    }
+
+    #petal-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: .4
+    }
+
+    .hidden {
+      display: none !important
+    }
+
+    .eyebrow {
+      font-size: .55rem;
+      font-weight: 500;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+      color: var(--gold-dk)
+    }
+
+    .rule {
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+      margin: .8rem auto 1.4rem
+    }
+
+    .field {
+      text-align: left;
+      margin-bottom: 1rem
+    }
+
+    .field label {
+      display: block;
+      font-size: .6rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .4rem
+    }
+
+    .field input {
+      width: 100%;
+      padding: .75rem .9rem;
+      border: 1px solid var(--blush);
+      background: #fff;
+      font: inherit;
+      font-size: .9rem;
+      color: var(--ink);
+      border-radius: 2px;
+      outline: none
+    }
+
+    .field input:focus {
+      border-color: var(--wine)
+    }
+
+    .btn {
+      background: var(--wine);
+      color: #fff;
+      border: none;
+      padding: .85rem 1.4rem;
+      font: 500 .65rem 'Jost', sans-serif;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background .2s
+    }
+
+    .btn:hover {
+      background: var(--wine-lt)
+    }
+
+    .btn.full {
+      width: 100%
+    }
+
+    .btn.ghost {
+      background: transparent;
+      color: var(--wine);
+      border: 1px solid var(--wine)
+    }
+
+    .btn.ghost:hover {
+      background: var(--wine);
+      color: #fff
+    }
+
+    .err {
+      color: #B03A48;
+      font-size: .78rem;
+      margin-top: .9rem;
+      min-height: 1em
+    }
+
+    /* Login Overlay */
+    #login-card {
+      position: relative;
+      z-index: 2;
+      max-width: 380px;
+      margin: 10vh auto;
+      background: #fff;
+      padding: 2.5rem 2rem;
+      border: 1px solid var(--blush);
+      border-top: 4px solid var(--wine);
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03)
+    }
+
+    #login-card h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: 2rem;
+      color: var(--wine);
+      margin-bottom: .2rem
+    }
+
+    #dash {
+      position: relative;
+      z-index: 1
+    }
+
+    header {
+      background: var(--wine);
+      color: #fff;
+      padding: 1.1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 10
+    }
+
+    header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: 1.4rem
+    }
+
+    header h2 i {
+      color: var(--blush)
+    }
+
+    header .sub {
+      font-size: .55rem;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--gold)
+    }
+
+    header .btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, .4);
+      padding: .6rem 1rem
+    }
+
+    header .btn:hover {
+      background: rgba(255, 255, 255, .12)
+    }
+
+    main {
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 2rem 1.2rem 4rem
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.2rem
+    }
+
+    .stat {
+      background: #fff;
+      border: 1px solid var(--blush);
+      border-top: 3px solid var(--gold);
+      padding: 1.2rem 1rem;
+      text-align: center;
+      border-radius: 2px
+    }
+
+    .stat .n {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.6rem;
+      font-weight: 300;
+      color: var(--wine);
+      line-height: 1
+    }
+
+    .stat .l {
+      font-size: .58rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: .5rem
+    }
+
+    .stat.sage {
+      border-top-color: var(--sage)
+    }
+
+    .stat.rose {
+      border-top-color: var(--blush)
+    }
+
+    .bar {
+      height: 6px;
+      background: var(--blush);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 2rem
+    }
+
+    .bar div {
+      height: 100%;
+      background: var(--wine);
+      width: 0;
+      transition: width .6s
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .7rem;
+      align-items: center;
+      margin-bottom: 1.2rem
+    }
+
+    .toolbar input {
+      flex: 1;
+      min-width: 180px;
+      padding: .7rem .9rem;
+      border: 1px solid var(--blush);
+      background: #fff;
+      font: inherit;
+      font-size: .85rem;
+      border-radius: 2px;
+      outline: none
+    }
+
+    .toolbar input:focus {
+      border-color: var(--wine)
+    }
+
+    .tabs {
+      display: flex;
+      border: 1px solid var(--wine);
+      border-radius: 2px;
+      overflow: hidden
+    }
+
+    .tabs button {
+      background: transparent;
+      border: none;
+      padding: .65rem 1rem;
+      font: 400 .62rem 'Jost', sans-serif;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--wine);
+      cursor: pointer
+    }
+
+    .tabs button.active {
+      background: var(--wine);
+      color: #fff
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: .8rem
+    }
+
+    .row {
+      background: #fff;
+      border: 1px solid var(--cream);
+      border-left: 3px solid var(--sage);
+      padding: 1rem 1.2rem;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr .6fr;
+      gap: 1rem;
+      align-items: start;
+      border-radius: 2px
+    }
+
+    .row.no {
+      border-left-color: var(--blush)
+    }
+
+    .row .nm {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem
+    }
+
+    .row .ph {
+      font-size: .8rem;
+      color: var(--muted);
+      margin-top: .15rem
+    }
+
+    .row .ph a {
+      color: var(--wine);
+      text-decoration: none
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: .55rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      padding: .3rem .6rem;
+      border-radius: 20px;
+      background: var(--sage);
+      color: #fff
+    }
+
+    .row.no .badge {
+      background: var(--blush);
+      color: var(--wine)
+    }
+
+    .gc {
+      font-size: .8rem;
+      color: var(--muted)
+    }
+
+    .gc b {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      color: var(--wine);
+      font-weight: 400
+    }
+
+    .msg {
+      grid-column: 1/-1;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--muted);
+      border-top: 1px dashed var(--blush);
+      padding-top: .7rem
+    }
+
+    .empty {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--muted);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1.2rem
+    }
+
+    @media(max-width:700px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .row {
+        grid-template-columns: 1fr
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="petal-canvas"></canvas>
+
+  <!-- LOGIN SECTION -->
+  <div id="login-card">
+    <div class="eyebrow">Admin Access</div>
+    <h2>Dimithre <i>&amp;</i> Navodya</h2>
+    <div class="rule"></div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="passkey" placeholder="Enter admin password"
+        onkeydown="if(event.key==='Enter') document.getElementById('loginBtn').click()">
+    </div>
+    <button class="btn full" id="loginBtn" type="button">LOGIN</button>
+    <div id="loginErr" class="err"></div>
+  </div>
+
+  <!-- DASHBOARD SECTION -->
+  <div id="dash" class="hidden">
+    <header>
+      <div>
+        <div class="sub">RSVP Dashboard</div>
+        <h2>Dimithre <i>&amp;</i> Navodya</h2>
+      </div>
+      <button class="btn" id="logoutBtn">Logout</button>
+    </header>
+    <main>
+      <div class="stats">
+        <div class="stat">
+          <div class="n" id="s-total">0</div>
+          <div class="l">Responses</div>
+        </div>
+        <div class="stat sage">
+          <div class="n" id="s-yes">0</div>
+          <div class="l">Attending</div>
+        </div>
+        <div class="stat rose">
+          <div class="n" id="s-no">0</div>
+          <div class="l">Declined</div>
+        </div>
+        <div class="stat">
+          <div class="n" id="s-guests">0</div>
+          <div class="l">Total Guests</div>
+        </div>
+      </div>
+      <div class="bar">
+        <div id="bar"></div>
+      </div>
+
+      <div class="toolbar">
+        <input type="search" id="search" placeholder="Search name, phone or message…">
+        <div class="tabs" id="tabs">
+          <button class="active" data-f="all">All</button>
+          <button data-f="yes">Attending</button>
+          <button data-f="no">Declined</button>
+        </div>
+        <button class="btn ghost" id="csvBtn">Export CSV</button>
+      </div>
+      <div class="list" id="list"></div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+    const app = initializeApp({
+      apiKey: "AIzaSyCfLSu2d-KnOdlTPiPcuuuDsj898h_htpk",
+      authDomain: "wedding-invitaion-eb0a3.firebaseapp.com",
+      projectId: "wedding-invitaion-eb0a3",
+      storageBucket: "wedding-invitaion-eb0a3.firebasestorage.app",
+      messagingSenderId: "527830152944",
+      appId: "1:527830152944:web:50bfbd40895b86b673f435"
+    });
+    const db = getFirestore(app);
+    const $ = id => document.getElementById(id);
+    let all = [], filter = 'all';
+
+    const ADMIN_PASS = "admin123";
+
+    function handleLogin() {
+      const passInput = $('passkey').value.trim();
+      const errDiv = $('loginErr');
+
+      if (passInput === ADMIN_PASS) {
+        $('login-card').classList.add('hidden');
+        $('dash').classList.remove('hidden');
+        errDiv.textContent = '';
+        initFirestore();
+      } else if (passInput === '') {
+        errDiv.textContent = "කරුණාකර Password එක ඇතුළත් කරන්න.";
+      } else {
+        errDiv.textContent = "Incorrect password. Please try again.";
+      }
+    }
+
+    $('loginBtn').onclick = handleLogin;
+
+    $('logoutBtn').onclick = () => {
+      $('dash').classList.add('hidden');
+      $('login-card').classList.remove('hidden');
+      $('passkey').value = '';
+      $('loginErr').textContent = '';
+    };
+
+    function initFirestore() {
+      onSnapshot(collection(db, 'wedding-guest'), snap => {
+        all = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        all.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+        render();
+      }, err => {
+        $('list').innerHTML = '<div class="empty">Cannot load responses. Check Firestore rules.<br><small>' + err.code + '</small></div>';
+      });
+    }
+
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    function render() {
+      const yes = all.filter(g => g.attending), no = all.filter(g => !g.attending);
+      const guests = yes.reduce((s, g) => s + (Number(g.guests) || 1), 0);
+      $('s-total').textContent = all.length;
+      $('s-yes').textContent = yes.length;
+      $('s-no').textContent = no.length;
+      $('s-guests').textContent = guests;
+      $('bar').style.width = all.length ? (yes.length / all.length * 100) + '%' : '0';
+
+      const q = $('search').value.toLowerCase().trim();
+      const rows = all.filter(g =>
+        (filter === 'all' || (filter === 'yes') === !!g.attending) &&
+        (!q || [g.name, g.phone, g.message].some(v => String(v || '').toLowerCase().includes(q)))
+      );
+
+      if (!rows.length) {
+        $('list').innerHTML = '<div class="empty">No responses yet</div>';
+        return;
+      }
+
+      $('list').innerHTML = rows.map(g => {
+        const guestCount = g.guests ? g.guests : 1;
+        const isAttending = g.attending;
+        const rowClass = isAttending ? '' : 'no';
+        const badgeText = isAttending ? 'Attending' : 'Declined';
+        const phoneHtml = g.phone ? '<a href="tel:' + esc(g.phone) + '">' + esc(g.phone) + '</a>' : '—';
+        const guestHtml = isAttending ? '<b>' + esc(guestCount) + '</b> guest' + (guestCount > 1 ? 's' : '') : '';
+        const msgHtml = g.message ? '<div class="msg">“' + esc(g.message) + '”</div>' : '';
+
+        return '<div class="row ' + rowClass + '">' +
+          '<div><div class="nm">' + esc(g.name) + '</div>' +
+          '<div class="ph">' + phoneHtml + '</div></div>' +
+          '<div><span class="badge">' + badgeText + '</span></div>' +
+          '<div class="gc">' + guestHtml + '</div>' +
+          msgHtml +
+          '</div>';
+      }).join('');
+    }
+
+    $('search').oninput = render;
+    $('tabs').onclick = e => {
+      if (!e.target.dataset.f) return;
+      filter = e.target.dataset.f;
+      [...$('tabs').children].forEach(b => b.classList.toggle('active', b === e.target));
+      render();
+    };
+
+    $('csvBtn').onclick = () => {
+      const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+      const csv = ['Name,Phone,Attending,Guests,Message',
+        ...all.map(g => [g.name, g.phone, g.attending ? 'Yes' : 'No', g.guests, g.message].map(q).join(','))].join('\n');
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv' }));
+      a.download = 'rsvp-responses.csv';
+      a.click();
+    };
+
+    (function () {
+      const c = $('petal-canvas'), ctx = c.getContext('2d');
+      let W, H; const rs = () => { W = c.width = innerWidth; H = c.height = innerHeight; }; rs(); addEventListener('resize', rs);
+      const COL = ['#E8C4C4', '#D4A4A4', '#C4A882', '#8A9E8C', '#F2D9D9'];
+      const mk = y => ({ x: Math.random() * W, y, s: Math.random() * 6 + 3, c: COL[Math.random() * COL.length | 0], vy: Math.random() * .5 + .2, w: Math.random() * 6, r: Math.random() * 6, o: Math.random() * .5 + .15 });
+      const P = Array.from({ length: 25 }, () => mk(Math.random() * H));
+      (function loop() {
+        ctx.clearRect(0, 0, W, H);
+        P.forEach(p => {
+          p.y += p.vy; p.w += .01; p.x += Math.sin(p.w) * .4; p.r += .01;
+          ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.globalAlpha = p.o; ctx.fillStyle = p.c;
+          ctx.beginPath(); ctx.ellipse(0, 0, p.s, p.s * .45, 0, 0, 6.283); ctx.fill(); ctx.restore();
+          if (p.y > H + 20) Object.assign(p, mk(-20));
+        });
+        requestAnimationFrame(loop);
+      })();
+    })();
+  </script>
+</body>
+
+</html>
