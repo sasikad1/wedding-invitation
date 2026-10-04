@@ -289,17 +289,18 @@
       border-color: var(--wine)
     }
 
-.tabs {
+    /* Fixed Tabs Scrolling for Mobile */
+    .tabs {
       display: flex;
       border: 1px solid var(--wine);
       border-radius: 2px;
-      overflow-x: auto; /* Buttons ගණන වැඩි නිසා horizontal scroll එක ලබා දේ */
-      white-space: nowrap; /* Text කඩෙන්නේ නැතුව එක පේළියට තබා ගනී */
+      overflow-x: auto;
+      white-space: nowrap;
       -webkit-overflow-scrolling: touch;
       max-width: 100%;
     }
 
-.tabs button {
+    .tabs button {
       background: transparent;
       border: none;
       padding: .65rem 1rem;
@@ -308,7 +309,7 @@
       text-transform: uppercase;
       color: var(--wine);
       cursor: pointer;
-      flex-shrink: 0; /* Buttons නොකුඩා වී නියමිත ප්‍රමාණයෙන්ම තිබීමට */
+      flex-shrink: 0;
     }
 
     .tabs button.active {
@@ -425,6 +426,17 @@
     @media(max-width:550px) {
       .stats {
         grid-template-columns: repeat(2, 1fr)
+      }
+
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .toolbar input,
+      .tabs,
+      .toolbar .btn {
+        width: 100%;
       }
 
       .row {
@@ -583,17 +595,17 @@
       $('bar').style.width = all.length ? (yes.length / all.length * 100) + '%' : '0';
 
       const q = $('search').value.toLowerCase().trim();
-const rows = all.filter(g => {
-  let matchesFilter = true;
-  if (filter === 'yes') matchesFilter = !!g.attending;
-  else if (filter === 'no') matchesFilter = !g.attending;
-  else if (filter === 'groom') matchesFilter = g.side === 'groom';
-  else if (filter === 'bride') matchesFilter = g.side === 'bride';
+      const rows = all.filter(g => {
+        let matchesFilter = true;
+        if (filter === 'yes') matchesFilter = !!g.attending;
+        else if (filter === 'no') matchesFilter = !g.attending;
+        else if (filter === 'groom') matchesFilter = g.side === 'groom';
+        else if (filter === 'bride') matchesFilter = g.side === 'bride';
 
-  const matchesSearch = !q || [g.name, g.phone, g.message, g.side].some(v => String(v || '').toLowerCase().includes(q));
+        const matchesSearch = !q || [g.name, g.phone, g.message, g.side].some(v => String(v || '').toLowerCase().includes(q));
 
-  return matchesFilter && matchesSearch;
-});
+        return matchesFilter && matchesSearch;
+      });
 
       if (!rows.length) {
         $('list').innerHTML = '<div class="empty">No responses yet</div>';
