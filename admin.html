@@ -289,15 +289,17 @@
       border-color: var(--wine)
     }
 
-    .tabs {
+.tabs {
       display: flex;
       border: 1px solid var(--wine);
       border-radius: 2px;
-      overflow-x: auto;
-      overflow: hidden
+      overflow-x: auto; /* Buttons ගණන වැඩි නිසා horizontal scroll එක ලබා දේ */
+      white-space: nowrap; /* Text කඩෙන්නේ නැතුව එක පේළියට තබා ගනී */
+      -webkit-overflow-scrolling: touch;
+      max-width: 100%;
     }
 
-    .tabs button {
+.tabs button {
       background: transparent;
       border: none;
       padding: .65rem 1rem;
@@ -305,7 +307,8 @@
       letter-spacing: .18em;
       text-transform: uppercase;
       color: var(--wine);
-      cursor: pointer
+      cursor: pointer;
+      flex-shrink: 0; /* Buttons නොකුඩා වී නියමිත ප්‍රමාණයෙන්ම තිබීමට */
     }
 
     .tabs button.active {
