@@ -293,6 +293,7 @@
       display: flex;
       border: 1px solid var(--wine);
       border-radius: 2px;
+      overflow-x: auto;
       overflow: hidden
     }
 
@@ -498,6 +499,8 @@
           <button class="active" data-f="all">All</button>
           <button data-f="yes">Attending</button>
           <button data-f="no">Declined</button>
+          <button data-f="groom">Groom's Side</button>
+          <button data-f="bride">Bride's Side</button>
         </div>
         <button class="btn ghost" id="csvBtn">Export CSV</button>
       </div>
@@ -562,7 +565,7 @@
 
     function render() {
       const yes = all.filter(g => g.attending), no = all.filter(g => !g.attending);
-      
+
       const totalGuests = yes.reduce((s, g) => s + (Number(g.guests) || 1), 0);
       const groomGuests = yes.filter(g => g.side === 'groom').reduce((s, g) => s + (Number(g.guests) || 1), 0);
       const brideGuests = yes.filter(g => g.side === 'bride').reduce((s, g) => s + (Number(g.guests) || 1), 0);
@@ -577,10 +580,17 @@
       $('bar').style.width = all.length ? (yes.length / all.length * 100) + '%' : '0';
 
       const q = $('search').value.toLowerCase().trim();
-      const rows = all.filter(g =>
-        (filter === 'all' || (filter === 'yes') === !!g.attending) &&
-        (!q || [g.name, g.phone, g.message, g.side].some(v => String(v || '').toLowerCase().includes(q)))
-      );
+const rows = all.filter(g => {
+  let matchesFilter = true;
+  if (filter === 'yes') matchesFilter = !!g.attending;
+  else if (filter === 'no') matchesFilter = !g.attending;
+  else if (filter === 'groom') matchesFilter = g.side === 'groom';
+  else if (filter === 'bride') matchesFilter = g.side === 'bride';
+
+  const matchesSearch = !q || [g.name, g.phone, g.message, g.side].some(v => String(v || '').toLowerCase().includes(q));
+
+  return matchesFilter && matchesSearch;
+});
 
       if (!rows.length) {
         $('list').innerHTML = '<div class="empty">No responses yet</div>';
@@ -592,7 +602,7 @@
         const isAttending = g.attending;
         const rowClass = isAttending ? '' : 'no';
         const badgeText = isAttending ? 'Attending' : 'Declined';
-        
+
         let sideText = '';
         if (g.side === 'groom') sideText = "Groom's Side";
         else if (g.side === 'bride') sideText = "Bride's Side";
@@ -605,8 +615,8 @@
           '<div><div class="nm">' + esc(g.name) + '</div>' +
           '<div class="ph">' + phoneHtml + '</div></div>' +
           '<div class="badge-wrap">' +
-            '<span class="badge">' + badgeText + '</span>' +
-            (sideText ? '<span class="badge side">' + esc(sideText) + '</span>' : '') +
+          '<span class="badge">' + badgeText + '</span>' +
+          (sideText ? '<span class="badge side">' + esc(sideText) + '</span>' : '') +
           '</div>' +
           '<div class="gc">' + guestHtml + '</div>' +
           msgHtml +
