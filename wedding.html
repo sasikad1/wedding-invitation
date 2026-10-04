@@ -1357,31 +1357,31 @@
     });
 
     document.addEventListener('DOMContentLoaded', function () {
-      const urlParams = new URLSearchParams(window.location.search);
-      const rawName = urlParams.get('name');
+  const urlParams = new URLSearchParams(window.location.search);
+  const rawName = urlParams.get('name');
 
-      const heroEyebrow = document.querySelector('.hero-eyebrow');
+  const heroEyebrow = document.querySelector('.hero-eyebrow');
 
-      if (rawName && rawName.trim() !== '') {
-        const formattedName = rawName.replace(/_/g, ' ').trim();
+  if (rawName && rawName.trim() !== '') {
+    const formattedName = rawName.replace(/_/g, ' ').trim();
 
-        // RSVP Form එක auto-fill කිරීම
-        const fnameInput = document.getElementById('name');
-        if (fnameInput) {
-          fnameInput.value = formattedName;
-        }
+    // RSVP Form එක auto-fill කිරීම
+    const fnameInput = document.getElementById('name');
+    if (fnameInput) {
+      fnameInput.value = formattedName;
+    }
 
-        // Hero Section එකට නම ලස්සනට එකතු කිරීම
-        if (heroEyebrow) {
-          heroEyebrow.innerHTML = `together<br>with their families<br>warmly request the presence of<br><span class="guest-name">${formattedName}</span><br>to celebrate their homecoming`;
-        }
-      } else {
-        // ලින්ක් එකේ නමක් නැතිව ආවොත්
-        if (heroEyebrow) {
-          heroEyebrow.innerHTML = `together<br>with their families<br>warmly request the presence of<br><span class="guest-name">You & Your Family</span><br>to celebrate their homecoming`;
-        }
-      }
-    });
+    // Hero Section එකට Guest ගේ නම එකතු කිරීම
+    if (heroEyebrow) {
+      heroEyebrow.innerHTML = `together<br>with their families<br>Mr. & Mrs. Kaluarachchi<br>and<br>Mr. & Mrs. Senaratne<br>warmly request the presence of<br><span class="guest-name">${formattedName}</span><br>at the wedding of their daughter and son`;
+    }
+  } else {
+    // ලින්ක් එකේ නමක් නැතිව ආවොත් (දෙමාපියන්ගේ නම් සහිතව)
+    if (heroEyebrow) {
+      heroEyebrow.innerHTML = `together<br>with their families<br>Mr. & Mrs. Kaluarachchi<br>and<br>Mr. & Mrs. Senaratne<br>warmly request the presence of<br><span class="guest-name">You & Your Family</span><br>at the wedding of their daughter and son`;
+    }
+  }
+});
   </script>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
