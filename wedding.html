@@ -5,9 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dimithre & Navodya — Homecoming</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&family=Pinyon+Script&display=swap" rel="stylesheet">
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@300;400;500&display=swap"
     rel="stylesheet">
@@ -135,22 +132,19 @@
       animation: fadeUp 1.2s 0.2s ease forwards;
     }
 
-.hero-eyebrow {
-  font-family: 'Montserrat', sans-serif; /* ලිපි වල ප්‍රධාන අකුරු සඳහා */
-  font-weight: 300;
-  font-size: 1.1rem;
-  line-height: 1.8;
-  letter-spacing: 1px;
-}
-
-/* දෙමාපියන්ගේ නම් සහ Guests ලගේ නම් වඩාත් ලස්සනට (Script font එකකින්) පෙන්වීමට */
-.hero-eyebrow .parent-names, 
-.hero-eyebrow .guest-name {
-  font-family: 'Pinyon Script', cursive;
-  font-size: 2.2rem;
-  color: #c5a059; /* කැමති නම් රන්වන් පාටක් (Gold/Bronze) දෙන්න පුළුවන් */
-  line-height: 1.4;
-}hero-eyebrow
+    .hero-eyebrow {
+      font-size: 0.78rem;
+      /* Font size එක 0.72rem සිට 0.85rem දක්වා වැඩි කළා */
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold-dk);
+      margin-bottom: 1.8rem;
+      max-width: 520px;
+      line-height: 2.1;
+      opacity: 0;
+      animation: fadeUp 1s 0.5s ease forwards;
+    }
 
     /* Guest name එක පැහැදිලිව පෙනෙන විදියට Font size එක වැඩි කළා */
     .hero-eyebrow .guest-name {
@@ -824,14 +818,8 @@
         font-style="italic" font-weight="300" fill="#7D3C4A">N&amp;D</text>
     </svg>
 
-<p class="hero-eyebrow">
-  together<br>
-  with their families<br>
-  <span class="parent-names">Mr. & Mrs. Kaluarachchi<br>and<br>Mr. & Mrs. Senaratne</span><br>
-  warmly request the presence of<br>
-  <span class="guest-name">${formattedName}</span><br>
-  at the wedding of their daughter and son
-</p>
+    <p class="hero-eyebrow">together </br>with their families </br> Mr. & Mrs. Kaluarachchi </br> and </br> Mr. & Mrs.
+      Senaratne </br> warmly request the presence of</br> _____</br> at the wedding of their daughter and son</p>
 
     <h1 class="hero-names">
       Navodya
