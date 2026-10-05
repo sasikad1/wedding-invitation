@@ -1,333 +1,414 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" type="image/png" href="favicon3.jpeg">
-<title>Dimithre & Hasini — You're Invited</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --wine:    #7D3C4A;
-  --wine-lt: #A05060;
-  --gold:    #C4A882;
-  --gold-dk: #9E7E52;
-  --ivory:   #FDF8F4;
-  --cream:   #F5EDE6;
-  --ink:     #2A1F1F;
-  --muted:   #7A6060;
-  --blush:   #E8C4C4;
-}
-
-html, body {
-  width: 100%; height: 100%;
-  background: var(--wine);
-  overflow: hidden;
-  font-family: 'Jost', sans-serif;
-}
-
-/* ── PETAL CANVAS ── */
-#petal-canvas {
-  position: fixed; top:0; left:0;
-  width:100%; height:100%;
-  pointer-events: none; z-index: 0;
-}
-
-/* ── SCENE ── */
-.scene {
-  position: fixed; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  z-index: 1;
-  perspective: 1200px;
-}
-
-/* ── ENVELOPE ── */
-.envelope {
-  position: relative;
-  width: min(360px, 88vw);
-  aspect-ratio: 1.5 / 1;
-  cursor: pointer;
-  transform-style: preserve-3d;
-  transition: transform 0.4s ease;
-  filter: drop-shadow(0 24px 60px rgba(0,0,0,0.35));
-}
-
-.envelope:hover { transform: scale(1.03) translateY(-4px); }
-.envelope.opening { animation: envelopeOpen 1.8s ease forwards; }
-
-@keyframes envelopeOpen {
-  0%   { transform: scale(1) translateY(0) rotateY(0deg); }
-  30%  { transform: scale(1.05) translateY(-10px) rotateY(0deg); }
-  60%  { transform: scale(1.05) translateY(-10px) rotateY(15deg); }
-  100% { transform: scale(0.85) translateY(30px) rotateY(0deg); opacity: 0; }
-}
-
-/* envelope body */
-.env-body {
-  position: absolute; inset: 0;
-  background: var(--cream);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-/* bottom triangle */
-.env-bottom {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  height: 55%;
-  background: #EDE3DA;
-  clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
-}
-
-/* left flap */
-.env-left {
-  position: absolute; left: 0; top: 0; bottom: 0;
-  width: 50%;
-  background: #E8DDD5;
-  clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
-}
-
-/* right flap */
-.env-right {
-  position: absolute; right: 0; top: 0; bottom: 0;
-  width: 50%;
-  background: #F0E8E0;
-  clip-path: polygon(100% 0%, 0% 50%, 100% 100%);
-}
-
-/* top flap — animates open */
-.env-top {
-  position: absolute; top: 0; left: 0; right: 0;
-  height: 55%;
-  background: linear-gradient(160deg, #F5EDE6 60%, #EADdd3 100%);
-  clip-path: polygon(0% 0%, 50% 100%, 100% 0%);
-  transform-origin: top center;
-  transform-style: preserve-3d;
-  transition: transform 0.6s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backface-visibility: hidden;
-  z-index: 4;
-}
-
-.envelope.opening .env-top {
-  transform: rotateX(-180deg);
-}
-
-/* seal */
-.env-seal {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 52px; height: 52px;
-  background: var(--wine);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  z-index: 5;
-  box-shadow: 0 2px 12px rgba(125,60,74,0.4);
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.envelope.opening .env-seal {
-  transform: translate(-50%, -50%) scale(0);
-  opacity: 0;
-}
-
-.env-seal svg { width: 28px; height: 28px; }
-
-/* letter inside */
-.env-letter {
-  position: absolute;
-  left: 8%; right: 8%;
-  bottom: 8%;
-  height: 80%;
-  background: var(--ivory);
-  border-radius: 2px;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  text-align: center;
-  padding: 1.5rem 1rem;
-  z-index: 2;
-  transform: translateY(0);
-  transition: transform 0.5s 0.5s ease;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
-}
-
-.envelope.opening .env-letter {
-  transform: translateY(-18%);
-}
-
-.letter-eyebrow {
-  font-size: 0.5rem; font-weight: 500;
-  letter-spacing: 0.3em; text-transform: uppercase;
-  color: var(--gold-dk); margin-bottom: 0.5rem;
-}
-
-.letter-names {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.2rem, 4vw, 1.8rem);
-  font-weight: 300; line-height: 1.1;
-  color: var(--ink);
-}
-
-.letter-names .amp {
-  font-style: italic; color: var(--wine); font-size: 0.85em;
-}
-
-.letter-rule {
-  width: 40px; height: 1px;
-  background: var(--gold);
-  margin: 0.6rem auto;
-}
-
-.letter-date {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 0.75rem; font-style: italic;
-  color: var(--muted);
-}
-
-/* ── TAP HINT ── */
-.tap-hint {
-  position: fixed; bottom: 2.5rem; left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  text-align: center;
-  animation: hintPulse 2s ease-in-out infinite;
-}
-
-.tap-hint span {
-  font-size: 0.62rem; font-weight: 400;
-  letter-spacing: 0.3em; text-transform: uppercase;
-  color: rgba(255,255,255,0.5);
-  display: block; margin-top: 0.5rem;
-}
-
-.tap-hint .arrow {
-  width: 1px; height: 30px;
-  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.4));
-  margin: 0 auto 0.4rem;
-}
-
-@keyframes hintPulse {
-  0%, 100% { opacity: 0.5; transform: translateX(-50%) translateY(0); }
-  50%       { opacity: 1;   transform: translateX(-50%) translateY(-5px); }
-}
-</style>
-</head>
-<body>
-
-<!-- background petals -->
-<canvas id="petal-canvas"></canvas>
-
-<!-- ENVELOPE SCENE -->
-<div class="scene">
-  <div class="envelope" id="envelope" onclick="openEnvelope()">
-    <div class="env-body"></div>
-    <div class="env-bottom"></div>
-    <div class="env-left"></div>
-    <div class="env-right"></div>
-
-    <!-- letter peek -->
-    <div class="env-letter">
-      <p class="letter-eyebrow">You are invited</p>
-      <p class="letter-names">Navodya <span class="amp">&amp;</span> Dimithre</p>
-      <div class="letter-rule"></div>
-      <p class="letter-date">November 5, 2026</p>
-    </div>
-
-    <!-- top flap -->
-    <div class="env-top"></div>
-
-    <!-- wax seal -->
-    <div class="env-seal">
-      <svg viewBox="0 0 28 28" fill="none">
-        <circle cx="14" cy="14" r="12" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>
-        <text x="14" y="18" text-anchor="middle"
-          font-family="Cormorant Garamond, serif"
-          font-size="9" font-style="italic" font-weight="300"
-          fill="white">N&amp;D</text>
-      </svg>
-    </div>
-  </div>
-</div>
-
-<!-- TAP HINT -->
-<div class="tap-hint" id="tap-hint">
-  <div class="arrow"></div>
-  <span>Tap to open</span>
-</div>
-
-<script>
-// ── PETAL BG ──
-function initPetals(canvasId, count, opacity) {
-  const c = document.getElementById(canvasId);
-  if (!c) return;
-  const ctx = c.getContext('2d');
-  let W, H, petals = [];
-  const resize = () => { W = c.width = c.offsetWidth || window.innerWidth; H = c.height = c.offsetHeight || window.innerHeight; };
-  resize(); window.addEventListener('resize', resize);
-  const COLORS = ['#E8C4C4','#D4A4A4','#C4A882','#8A9E8C','#F2D9D9','#D4B8A0'];
-  const mk = () => ({ x: Math.random()*W, y:-20, size: Math.random()*7+3, color: COLORS[Math.floor(Math.random()*COLORS.length)], vy: Math.random()*0.6+0.2, vx:(Math.random()-0.5)*0.3, rot:Math.random()*Math.PI*2, rotV:(Math.random()-0.5)*0.02, wave:Math.random()*Math.PI*2, op:Math.random()*0.5+0.15 });
-  for(let i=0;i<count;i++){const p=mk();p.y=Math.random()*H;petals.push(p);}
-  c.style.opacity = opacity;
-  (function loop(){
-    ctx.clearRect(0,0,W,H);
-    petals.forEach(p=>{
-      p.y+=p.vy; p.wave+=0.01; p.x+=Math.sin(p.wave)*0.4+p.vx; p.rot+=p.rotV;
-      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
-      ctx.globalAlpha=p.op; ctx.fillStyle=p.color;
-      ctx.beginPath(); ctx.ellipse(0,0,p.size,p.size*0.45,0,0,Math.PI*2);
-      ctx.fill(); ctx.restore();
-      if(p.y>H+20) Object.assign(p,mk(),{y:-20});
-    });
-    requestAnimationFrame(loop);
-  })();
-}
-
-initPetals('petal-canvas', 35, 0.4);
-
-// ── ENVELOPE OPEN & REDIRECT ──
-let opened = false;
-
-function openEnvelope() {
-  if (opened) return;
-  opened = true;
-
-  // Save music play trigger state for wedding.html
-  sessionStorage.setItem('playMusicOnLoad', 'true');
-
-  document.getElementById('tap-hint').style.opacity = '0';
-  document.getElementById('tap-hint').style.transition = 'opacity 0.3s';
-
-  const env = document.getElementById('envelope');
-  env.classList.add('opening');
-
-  // Redirect to wedding.html after opening animation completes
-  setTimeout(() => {
-    // දැනට තියෙන URL එකෙන් 'name' parameter එක ලබා ගැනීම
-    const urlParams = new URLSearchParams(window.location.search);
-    const guestName = urlParams.get('name');
-
-    // wedding.html එකට යන ලින්ක් එක සකස් කිරීම
-    let destinationUrl = 'wedding.html';
-    if (guestName) {
-        destinationUrl += '?name=' + encodeURIComponent(guestName);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="favicon3.jpeg">
+  <title>Navodya & Dimithre — You're Invited</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    // wedding.html පිටුවට Redirect කිරීම
-    window.location.href = destinationUrl;
-  }, 1200);
-}
+    :root {
+      --wine: #7D3C4A;
+      --wine-lt: #A05060;
+      --gold: #C4A882;
+      --gold-dk: #9E7E52;
+      --ivory: #FDF8F4;
+      --cream: #F5EDE6;
+      --ink: #2A1F1F;
+      --muted: #7A6060;
+      --blush: #E8C4C4;
+    }
 
-// Subtle float animation on envelope
-const env = document.getElementById('envelope');
-let ft = 0;
-(function floatLoop() {
-  ft += 0.02;
-  if (!opened) {
-    env.style.transform = `translateY(${Math.sin(ft) * 6}px)`;
-  }
-  requestAnimationFrame(floatLoop);
-})();
-</script>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background: var(--wine);
+      overflow: hidden;
+      font-family: 'Jost', sans-serif;
+    }
+
+    /* ── PETAL CANVAS ── */
+    #petal-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── SCENE ── */
+    .scene {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      perspective: 1200px;
+    }
+
+    /* ── ENVELOPE ── */
+    .envelope {
+      position: relative;
+      width: min(360px, 88vw);
+      aspect-ratio: 1.5 / 1;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform 0.4s ease;
+      filter: drop-shadow(0 24px 60px rgba(0, 0, 0, 0.35));
+    }
+
+    .envelope:hover {
+      transform: scale(1.03) translateY(-4px);
+    }
+
+    .envelope.opening {
+      animation: envelopeOpen 1.8s ease forwards;
+    }
+
+    @keyframes envelopeOpen {
+      0% {
+        transform: scale(1) translateY(0) rotateY(0deg);
+      }
+
+      30% {
+        transform: scale(1.05) translateY(-10px) rotateY(0deg);
+      }
+
+      60% {
+        transform: scale(1.05) translateY(-10px) rotateY(15deg);
+      }
+
+      100% {
+        transform: scale(0.85) translateY(30px) rotateY(0deg);
+        opacity: 0;
+      }
+    }
+
+    /* envelope body */
+    .env-body {
+      position: absolute;
+      inset: 0;
+      background: var(--cream);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    /* bottom triangle */
+    .env-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 55%;
+      background: #EDE3DA;
+      clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+    }
+
+    /* left flap */
+    .env-left {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      background: #E8DDD5;
+      clip-path: polygon(0% 0%, 100% 50%, 0% 100%);
+    }
+
+    /* right flap */
+    .env-right {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 50%;
+      background: #F0E8E0;
+      clip-path: polygon(100% 0%, 0% 50%, 100% 100%);
+    }
+
+    /* top flap — animates open */
+    .env-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 55%;
+      background: linear-gradient(160deg, #F5EDE6 60%, #EADdd3 100%);
+      clip-path: polygon(0% 0%, 50% 100%, 100% 0%);
+      transform-origin: top center;
+      transform-style: preserve-3d;
+      transition: transform 0.6s 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      backface-visibility: hidden;
+      z-index: 4;
+    }
+
+    .envelope.opening .env-top {
+      transform: rotateX(-180deg);
+    }
+
+    /* seal */
+    .env-seal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 52px;
+      height: 52px;
+      background: var(--wine);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      box-shadow: 0 2px 12px rgba(125, 60, 74, 0.4);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .envelope.opening .env-seal {
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+    }
+
+    .env-seal svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    /* letter inside */
+    .env-letter {
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      bottom: 8%;
+      height: 80%;
+      background: var(--ivory);
+      border-radius: 2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1.5rem 1rem;
+      z-index: 2;
+      transform: translateY(0);
+      transition: transform 0.5s 0.5s ease;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .envelope.opening .env-letter {
+      transform: translateY(-18%);
+    }
+
+    .letter-eyebrow {
+      font-size: 0.5rem;
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold-dk);
+      margin-bottom: 0.5rem;
+    }
+
+    .letter-names {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.2rem, 4vw, 1.8rem);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--ink);
+    }
+
+    .letter-names .amp {
+      font-style: italic;
+      color: var(--wine);
+      font-size: 0.85em;
+    }
+
+    .letter-rule {
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+      margin: 0.6rem auto;
+    }
+
+    .letter-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.75rem;
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    /* ── TAP HINT ── */
+    .tap-hint {
+      position: fixed;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      text-align: center;
+      animation: hintPulse 2s ease-in-out infinite;
+    }
+
+    .tap-hint span {
+      font-size: 0.62rem;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.5);
+      display: block;
+      margin-top: 0.5rem;
+    }
+
+    .tap-hint .arrow {
+      width: 1px;
+      height: 30px;
+      background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.4));
+      margin: 0 auto 0.4rem;
+    }
+
+    @keyframes hintPulse {
+
+      0%,
+      100% {
+        opacity: 0.5;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      50% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(-5px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- background petals -->
+  <canvas id="petal-canvas"></canvas>
+
+  <!-- ENVELOPE SCENE -->
+  <div class="scene">
+    <div class="envelope" id="envelope" onclick="openEnvelope()">
+      <div class="env-body"></div>
+      <div class="env-bottom"></div>
+      <div class="env-left"></div>
+      <div class="env-right"></div>
+
+      <!-- letter peek -->
+      <div class="env-letter">
+        <p class="letter-eyebrow">You are invited</p>
+        <p class="letter-names">Navodya <span class="amp">&amp;</span> Dimithre</p>
+        <div class="letter-rule"></div>
+        <p class="letter-date">November 5, 2026</p>
+      </div>
+
+      <!-- top flap -->
+      <div class="env-top"></div>
+
+      <!-- wax seal -->
+      <div class="env-seal">
+        <svg viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="12" stroke="rgba(255,255,255,0.3)" stroke-width="0.8" />
+          <text x="14" y="18" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="9"
+            font-style="italic" font-weight="300" fill="white">N&amp;D</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAP HINT -->
+  <div class="tap-hint" id="tap-hint">
+    <div class="arrow"></div>
+    <span>Tap to open</span>
+  </div>
+
+  <script>
+    // ── PETAL BG ──
+    function initPetals(canvasId, count, opacity) {
+      const c = document.getElementById(canvasId);
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      let W, H, petals = [];
+      const resize = () => { W = c.width = c.offsetWidth || window.innerWidth; H = c.height = c.offsetHeight || window.innerHeight; };
+      resize(); window.addEventListener('resize', resize);
+      const COLORS = ['#E8C4C4', '#D4A4A4', '#C4A882', '#8A9E8C', '#F2D9D9', '#D4B8A0'];
+      const mk = () => ({ x: Math.random() * W, y: -20, size: Math.random() * 7 + 3, color: COLORS[Math.floor(Math.random() * COLORS.length)], vy: Math.random() * 0.6 + 0.2, vx: (Math.random() - 0.5) * 0.3, rot: Math.random() * Math.PI * 2, rotV: (Math.random() - 0.5) * 0.02, wave: Math.random() * Math.PI * 2, op: Math.random() * 0.5 + 0.15 });
+      for (let i = 0; i < count; i++) { const p = mk(); p.y = Math.random() * H; petals.push(p); }
+      c.style.opacity = opacity;
+      (function loop() {
+        ctx.clearRect(0, 0, W, H);
+        petals.forEach(p => {
+          p.y += p.vy; p.wave += 0.01; p.x += Math.sin(p.wave) * 0.4 + p.vx; p.rot += p.rotV;
+          ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+          ctx.globalAlpha = p.op; ctx.fillStyle = p.color;
+          ctx.beginPath(); ctx.ellipse(0, 0, p.size, p.size * 0.45, 0, 0, Math.PI * 2);
+          ctx.fill(); ctx.restore();
+          if (p.y > H + 20) Object.assign(p, mk(), { y: -20 });
+        });
+        requestAnimationFrame(loop);
+      })();
+    }
+
+    initPetals('petal-canvas', 35, 0.4);
+
+    // ── ENVELOPE OPEN & REDIRECT ──
+    let opened = false;
+
+    function openEnvelope() {
+      if (opened) return;
+      opened = true;
+
+      // Save music play trigger state for wedding.html
+      sessionStorage.setItem('playMusicOnLoad', 'true');
+
+      document.getElementById('tap-hint').style.opacity = '0';
+      document.getElementById('tap-hint').style.transition = 'opacity 0.3s';
+
+      const env = document.getElementById('envelope');
+      env.classList.add('opening');
+
+      // Redirect to wedding.html after opening animation completes
+      setTimeout(() => {
+        // දැනට තියෙන URL එකෙන් 'name' parameter එක ලබා ගැනීම
+        const urlParams = new URLSearchParams(window.location.search);
+        const guestName = urlParams.get('name');
+
+        // wedding.html එකට යන ලින්ක් එක සකස් කිරීම
+        let destinationUrl = 'wedding.html';
+        if (guestName) {
+          destinationUrl += '?name=' + encodeURIComponent(guestName);
+        }
+
+        // wedding.html පිටුවට Redirect කිරීම
+        window.location.href = destinationUrl;
+      }, 1200);
+    }
+
+    // Subtle float animation on envelope
+    const env = document.getElementById('envelope');
+    let ft = 0;
+    (function floatLoop() {
+      ft += 0.02;
+      if (!opened) {
+        env.style.transform = `translateY(${Math.sin(ft) * 6}px)`;
+      }
+      requestAnimationFrame(floatLoop);
+    })();
+  </script>
 </body>
+
 </html>
