@@ -463,7 +463,8 @@
         gap: .5rem
       }
 
-      .gc, .del-btn {
+      .gc,
+      .del-btn {
         text-align: left;
         justify-self: start;
       }
@@ -495,7 +496,10 @@
         <div class="sub">RSVP Dashboard</div>
         <h2>Dimithre <i>&amp;</i> Navodya</h2>
       </div>
-      <button class="btn" id="logoutBtn">Logout</button>
+      <div style="display: flex; gap: 0.5rem;">
+        <button class="btn" id="refreshBtn">Refresh</button>
+        <button class="btn" id="logoutBtn">Logout</button>
+      </div>
     </header>
     <main>
       <div class="stats">
@@ -566,7 +570,7 @@
       const errDiv = $('loginErr');
 
       if (passInput === ADMIN_PASS) {
-        $('login-card').classList.add('hidden');$('dash').classList.remove('hidden');
+        $('login-card').classList.add('hidden'); $('dash').classList.remove('hidden');
         errDiv.textContent = '';
         initFirestore();
       } else if (passInput === '') {
@@ -578,9 +582,15 @@
 
     $('loginBtn').onclick = handleLogin;
 
+    $('refreshBtn').onclick = () => {
+      render();
+    };
+
     $('logoutBtn').onclick = () => {
-      $('dash').classList.add('hidden');$('login-card').classList.remove('hidden');
-      $('passkey').value = '';$('loginErr').textContent = '';
+      $('dash').classList.add('hidden');
+      $('login-card').classList.remove('hidden');
+      $('passkey').value = '';
+      $('loginErr').textContent = '';
     };
 
     function initFirestore() {
