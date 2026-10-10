@@ -83,7 +83,7 @@
       margin-bottom: .4rem
     }
 
-    .field input {
+    .field input, .field select, .field textarea {
       width: 100%;
       padding: .75rem .9rem;
       border: 1px solid var(--blush);
@@ -95,7 +95,7 @@
       outline: none
     }
 
-    .field input:focus {
+    .field input:focus, .field select:focus, .field textarea:focus {
       border-color: var(--wine)
     }
 
@@ -290,7 +290,6 @@
       border-color: var(--wine)
     }
 
-    /* Fixed Tabs Scrolling for Mobile */
     .tabs {
       display: flex;
       border: 1px solid var(--wine);
@@ -330,7 +329,7 @@
       border-left: 3px solid var(--sage);
       padding: 1rem 1.2rem;
       display: grid;
-      grid-template-columns: 1.4fr 1.2fr 0.6fr 0.4fr;
+      grid-template-columns: 1.4fr 1.2fr 0.6fr 0.6fr;
       gap: 1rem;
       align-items: center;
       border-radius: 2px
@@ -398,21 +397,38 @@
       font-weight: 400
     }
 
-    .del-btn {
+    .action-btns {
+      display: flex;
+      gap: 0.4rem;
+      justify-self: end;
+    }
+
+    .del-btn, .edit-btn {
       background: #fff;
-      color: #B03A48;
-      border: 1px solid #B03A48;
+      border: 1px solid;
       padding: .4rem .6rem;
       font-size: .75rem;
       border-radius: 2px;
       cursor: pointer;
       text-align: center;
       transition: all .2s ease;
-      justify-self: end;
     }
 
+    .del-btn {
+      color: #B03A48;
+      border-color: #B03A48;
+    }
     .del-btn:hover {
       background: #B03A48;
+      color: #fff;
+    }
+
+    .edit-btn {
+      color: var(--wine);
+      border-color: var(--wine);
+    }
+    .edit-btn:hover {
+      background: var(--wine);
       color: #fff;
     }
 
@@ -425,6 +441,41 @@
       border-top: 1px dashed var(--blush);
       padding-top: .7rem;
       margin-top: .4rem
+    }
+
+    /* Modal Styling for Editing */
+    #edit-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 2rem;
+      max-width: 450px;
+      width: 100%;
+      border-radius: 2px;
+      border-top: 4px solid var(--wine);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .modal-content h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      color: var(--wine);
+      margin-bottom: 1.2rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.8rem;
+      margin-top: 1.2rem;
     }
 
     .empty {
@@ -464,7 +515,7 @@
       }
 
       .gc,
-      .del-btn {
+      .action-btns {
         text-align: left;
         justify-self: start;
       }
@@ -487,6 +538,48 @@
     </div>
     <button class="btn full" id="loginBtn" type="button">LOGIN</button>
     <div id="loginErr" class="err"></div>
+  </div>
+
+  <!-- EDIT MODAL -->
+  <div id="edit-modal" class="hidden">
+    <div class="modal-content">
+      <h3>Edit RSVP Details</h3>
+      <input type="hidden" id="edit-id">
+      <div class="field">
+        <label>Name</label>
+        <input type="text" id="edit-name">
+      </div>
+      <div class="field">
+        <label>Phone</label>
+        <input type="text" id="edit-phone">
+      </div>
+      <div class="field">
+        <label>Attending Status</label>
+        <select id="edit-attending">
+          <option value="true">Attending</option>
+          <option value="false">Declined</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Side</label>
+        <select id="edit-side">
+          <option value="groom">Groom's Side</option>
+          <option value="bride">Bride's Side</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Number of Guests</label>
+        <input type="number" id="edit-guests" min="1" max="8">
+      </div>
+      <div class="field">
+        <label>Message</label>
+        <textarea id="edit-message" rows="3"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn full" id="saveEditBtn">Save Changes</button>
+        <button class="btn ghost full" id="cancelEditBtn">Cancel</button>
+      </div>
+    </div>
   </div>
 
   <!-- DASHBOARD SECTION -->
@@ -549,7 +642,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+    import { getFirestore, collection, onSnapshot, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
     const app = initializeApp({
       apiKey: "AIzaSyCfLSu2d-KnOdlTPiPcuuuDsj898h_htpk",
@@ -570,7 +663,7 @@
       const errDiv = $('loginErr');
 
       if (passInput === ADMIN_PASS) {
-        $('login-card').classList.add('hidden'); $('dash').classList.remove('hidden');
+        $('login-card').classList.add('hidden');$('dash').classList.remove('hidden');
         errDiv.textContent = '';
         initFirestore();
       } else if (passInput === '') {
@@ -587,10 +680,8 @@
     };
 
     $('logoutBtn').onclick = () => {
-      $('dash').classList.add('hidden');
-      $('login-card').classList.remove('hidden');
-      $('passkey').value = '';
-      $('loginErr').textContent = '';
+      $('dash').classList.add('hidden');$('login-card').classList.remove('hidden');
+      $('passkey').value = '';$('loginErr').textContent = '';
     };
 
     function initFirestore() {
@@ -603,7 +694,7 @@
       });
     }
 
-    // Function to delete single response
+    // Delete single response
     async function deleteResponse(id, name) {
       if (confirm(`Are you sure you want to delete "${name}"'s response?`)) {
         try {
@@ -613,6 +704,49 @@
         }
       }
     }
+
+    // Open Edit Modal with existing data
+    window.openEditModal = function(id) {
+      const guest = all.find(g => g.id === id);
+      if (!guest) return;
+
+      $('edit-id').value = guest.id;
+      $('edit-name').value = guest.name || '';
+      $('edit-phone').value = guest.phone \vert{}\vert{} '';$('edit-attending').value = guest.attending ? "true" : "false";
+      $('edit-side').value = guest.side \vert{}\vert{} 'groom';$('edit-guests').value = guest.guests || 1;
+      $('edit-message').value = guest.message || '';
+
+      $('edit-modal').classList.remove('hidden');
+    }
+
+    // Cancel edit
+    $('cancelEditBtn').onclick = () => {$('edit-modal').classList.add('hidden');
+    }
+
+    // Save edited data to Firestore
+    $('saveEditBtn').onclick = async () => {
+      const id = $('edit-id').value;
+      const updatedData = {
+        name: $('edit-name').value.trim(),
+        phone: $('edit-phone').value.trim(),
+        attending: $('edit-attending').value === "true",
+        side: $('edit-side').value,
+        guests: parseInt($('edit-guests').value) || 1,
+        message: $('edit-message').value.trim()
+      };
+
+      if (!updatedData.name) {
+        alert("Name cannot be empty");
+        return;
+      }
+
+      try {
+        await updateDoc(doc(db, 'wedding-guest', id), updatedData);
+        $('edit-modal').classList.add('hidden');
+      } catch (err) {
+        alert('Failed to update: ' + err.message);
+      }
+    };
 
     const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -672,12 +806,15 @@
           (sideText ? '<span class="badge side">' + esc(sideText) + '</span>' : '') +
           '</div>' +
           '<div class="gc">' + guestHtml + '</div>' +
-          '<button class="del-btn" data-id="' + esc(g.id) + '" data-name="' + esc(g.name) + '">Delete</button>' +
+          '<div class="action-btns">' +
+          '<button class="edit-btn" onclick="openEditModal(\'' + esc(g.id) + '\')">Edit</button>' +
+          '<button class="del-dbn del-btn" data-id="' + esc(g.id) + '" data-name="' + esc(g.name) + '">Delete</button>' +
+          '</div>' +
           msgHtml +
           '</div>';
       }).join('');
 
-      // Add event listeners to all delete buttons
+      // Add event listeners to delete buttons
       document.querySelectorAll('.del-btn').forEach(btn => {
         btn.onclick = () => deleteResponse(btn.dataset.id, btn.dataset.name);
       });
